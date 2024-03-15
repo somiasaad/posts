@@ -43,5 +43,16 @@ router.delete("/delete/:id", protectedRoute, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+//UPDATE POST
+router.put("/update/:id", protectedRoute, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    await post.updateOne({ $set: req.body }, { new: true });
+    res.status(200).json("Updated Post Success ☻♥");
+  } catch (error) {
+    res.status(400).json("Error Update Post !!~");
+  }
+});
+
 
 module.exports = router;
