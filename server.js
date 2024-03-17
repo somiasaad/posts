@@ -12,7 +12,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors())
-app.use(cors({ origin: "https://posts-13.onrender.com",origin:"http://localhost:3000", credentials: true }));
+app.use((req, res, next) => {
+  res.setHeader('https://posts-11.onrender.com', 'http://localhost:3000', 'http://localhost:5000');
+  next();
+});
+
 
 mongoose.set("strictQuery", true);
 mongoose
