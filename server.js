@@ -12,10 +12,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors())
-app.use((req, res, next) => {
-  res.setHeader('https://posts-11.onrender.com', 'http://localhost:3000', 'http://localhost:5000');
-  next();
-});
+app.use(cors({
+  origin :"*",
+  credentials: true
+}));
 
 
 mongoose.set("strictQuery", true);
