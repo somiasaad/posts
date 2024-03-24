@@ -54,5 +54,62 @@ router.put("/update/:id", protectedRoute, async (req, res) => {
   }
 });
 
+// Create a new information post
+router.post('/createInfoPost', protectedRoute, async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const currentPost = await Post.findOne({ isCurrent: true });
+    if (currentPost) {
+      currentPost.isCurrent = false;
+      await currentPost.save();
+    }
+    const newPost = new Post({
+      title,
+      content,
+      isInfo: true,
+      isCurrent: true,
+    });
+    await newPost.save();
+    res.status(201).json({ message: "Post created successfully", post: newPost });
+  } catch (error) {
+    console.error("Error creating post:", error);
+    res.status(500).json({ error: "Could not create post" });
+  }
+});
+// Get all posts
+router.get('/getAllPosts', protectedRoute, async (req, res) => {
+  try {
+    const posts = await Post.find({ isInfo: true });
+    res.json({ posts });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Could not fetch posts" });
+  }
+});
+// Update an existing information post
+router.put('/updateInfoPost/:id', protectedRoute, async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    const { title, content } = req.body;
+
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    post.title = title;
+    post.content = content;
+
+    await post.save();
+    res.json({ message: "Post updated successfully", post });
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).json({ error: "Could not update post" });
+  }
+});
+
+
 
 module.exports = router;
