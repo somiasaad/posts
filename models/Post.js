@@ -8,7 +8,7 @@ const PostSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    title: { type: String, required: true },
+    title: { type: String },
     content: { type: String, required: true },
   },{ isInfo: { type: Boolean, default: false } },
   {
