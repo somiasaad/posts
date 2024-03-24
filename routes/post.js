@@ -87,7 +87,7 @@ router.get('/getAllPosts', protectedRoute, async (req, res) => {
   }
 });
 // Update an existing information post
-router.put('/updateInfoPost/:id', protectedRoute, async (req, res) => {
+router.put('/updateInfoPost/:id', async (req, res) => {
   try {
     const postId = req.params.id;
 
