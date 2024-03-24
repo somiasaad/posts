@@ -86,29 +86,39 @@ router.get('/getAllPosts', protectedRoute, async (req, res) => {
     res.status(500).json({ error: "Could not fetch posts" });
   }
 });
-// Update an existing information post
-router.put('/updateInfoPost/:id', async (req, res) => {
+router.put('/updateIsCurrent/:id', async (req, res) => {
   try {
     const postId = req.params.id;
 
-    const { title, content } = req.body;
+    // Find the post to update
+    const postToUpdate = await Post.findById(postId);
 
-    const post = await Post.findById(postId);
-
-    if (!post) {
+    if (!postToUpdate) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    post.title = title;
-    post.content = content;
+    // Check if the post is already current
+    if (postToUpdate.isCurrent) {
+      return res.status(400).json({ error: "Post is already set as current" });
+    }
 
-    await post.save();
-    res.json({ message: "Post updated successfully", post });
+    // Find the current post and update it to set isCurrent to false
+    const currentPost = await Post.findOne({ isCurrent: true });
+    if (currentPost) {
+      currentPost.isCurrent = false;
+      await currentPost.save();
+    }
+
+    // Update the target post to set isCurrent to true
+    postToUpdate.isCurrent = true;
+    await postToUpdate.save();
+    res.status(200).json({ message: "Post updated successfully", post: postToUpdate });
   } catch (error) {
     console.error("Error updating post:", error);
     res.status(500).json({ error: "Could not update post" });
   }
-});
+})
+
 
 
 
