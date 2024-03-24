@@ -10,6 +10,9 @@ const PostSchema = new mongoose.Schema(
     },
     title: { type: String, required: true },
     content: { type: String, required: true },
+  },{ isInfo: { type: Boolean, default: false } },
+  {
+    isCurrent: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
