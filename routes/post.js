@@ -4,7 +4,7 @@ const Post = require("../models/Post");
 const { protectedRoute } = require("../utils/protectedRoute");
 
 // Create
-router.post("/create", protectedRoute, async (req, res) => {
+router.post("/create",async (req, res) => {
   try {
     const newPost = new Post({ ...req.body });
     const savedPost = await newPost.save();
@@ -35,7 +35,7 @@ router.get("/all/get", async (req, res) => {
 });
 
 // Delete
-router.delete("/delete/:id", protectedRoute, async (req, res) => {
+router.delete("/delete/:id",  async (req, res) => {
   try {
     await Post.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Post Deleted Successful 🥰" });
@@ -44,7 +44,7 @@ router.delete("/delete/:id", protectedRoute, async (req, res) => {
   }
 });
 //UPDATE POST
-router.put("/update/:id", protectedRoute, async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     await post.updateOne({ $set: req.body }, { new: true });
@@ -55,7 +55,7 @@ router.put("/update/:id", protectedRoute, async (req, res) => {
 });
 
 // Create a new information post
-router.post('/createInfoPost', protectedRoute, async (req, res) => {
+router.post('/createInfoPost', async (req, res) => {
   try {
     const { title, content } = req.body;
     const currentPost = await Post.findOne({ isCurrent: true });
@@ -77,7 +77,7 @@ router.post('/createInfoPost', protectedRoute, async (req, res) => {
   }
 });
 // Get all posts
-router.get('/getAllPosts', protectedRoute, async (req, res) => {
+router.get('/getAllPosts', async (req, res) => {
   try {
     const posts = await Post.find({ isInfo: true });
     res.json({ posts });
