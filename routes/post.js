@@ -92,6 +92,8 @@ router.put('/updateIsCurrent/:id', async (req, res) => {
 
     // Find the post to update
     const postToUpdate = await Post.findById(postId);
+    await postToUpdate.updateOne({ $set: req.body }, { new: true });
+    res.status(200).json("Updated Post Success ☻♥");
 
     if (!postToUpdate) {
       return res.status(404).json({ error: "Post not found" });
