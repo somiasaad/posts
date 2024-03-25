@@ -53,5 +53,38 @@ router.put("/update/:id", protectedRoute, async (req, res) => {
     res.status(400).json("Error Update Post !!~");
   }
 });
+//update info
+router.put('/updateIsCurrent/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    // Find the post to update
+    const postToUpdate = await Post.findById(postId);
+
+    if (!postToUpdate) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Check if the post is already current
+    if (postToUpdate.isCurrent) {
+      return res.status(400).json({ error: "Post is already set as current" });
+    }
+
+    // Find the current post and update it to set isCurrent to false
+    const currentPost = await Post.findOne({ isCurrent: true });
+    if (currentPost) {
+      currentPost.isCurrent = false;
+      await currentPost.save();
+    }
+
+    // Update the target post to set isCurrent to true
+    postToUpdate.isCurrent = true;
+    await postToUpdate.save();
+    res.status(200).json({ message: "Post updated successfully", post: postToUpdate });
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).json({ error: "Could not update post" });
+  }
+})
 
 module.exports = router;
